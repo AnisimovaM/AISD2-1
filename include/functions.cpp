@@ -168,4 +168,196 @@ namespace tree {
 
 	
 
+	size_t lcg() {
+		static size_t x = 0;
+		x = (1021 * x + 24631) % 116640;
+		return x;
+	}
+
 	
+
+	uint64_t time_now() {
+		using namespace std::chrono;
+		return duration_cast<microseconds>(system_clock::now().time_since_epoch()).count();
+	}
+
+	double set_fill_time(int numbers_for_filling, int attempts) {
+		double res = 0;
+		for (int attempt = 0; attempt < attempts; attempt++) {
+			Set<int> new_set;
+			int current_count_of_elements = 0;
+			uint64_t begin = time_now();
+			while (current_count_of_elements != numbers_for_filling) {
+				if (new_set.insert(lcg())) {
+					current_count_of_elements++;
+				}
+			}
+			uint64_t end = time_now();
+			res += (end - begin);
+		}
+		return res / attempts;
+	}
+
+	double vector_fill_time(int numbers_for_filling, int attempts) {
+		double res = 0;
+		for (int attempt = 0; attempt < attempts; attempt++) {
+			vector<int> new_vector;
+			int current_count_of_elements = 0;
+			uint64_t begin = time_now();
+			while (current_count_of_elements != numbers_for_filling) {
+				new_vector.push_back(lcg());
+				current_count_of_elements++;
+			}
+			uint64_t end = time_now();
+			res += (end - begin);
+		}
+		return res / attempts;
+	}
+
+	double set_contain_element_time(int numbers_for_filling, int attempts) {
+		double res = 0;
+		for (int attempt = 0; attempt < attempts; attempt++) {
+			Set<int> new_set;
+			int current_count_of_elements = 0;
+			while (current_count_of_elements != numbers_for_filling) {
+				if (new_set.insert(lcg())) {
+					current_count_of_elements++;
+				}
+			}
+			uint64_t begin = time_now();
+			new_set.contain(lcg());
+			uint64_t end = time_now();
+			res += (end - begin);
+		}
+		return res / attempts;
+	}
+
+	double vector_contain_element_time(int numbers_for_filling, int attempts) {
+		double res = 0;
+		for (int attempt = 0; attempt < attempts; attempt++) {
+			vector<int> new_vector;
+			int current_count_of_elements = 0;
+			while (current_count_of_elements != numbers_for_filling) {
+				new_vector.push_back(lcg());
+				current_count_of_elements++;
+			}
+			uint64_t begin = time_now();
+			size_t element = lcg();
+			for (int i = 0; i < new_vector.size(); i++) {
+				if (new_vector[i] == element) {
+					break;
+				}
+			}
+			uint64_t end = time_now();
+			res += (end - begin);
+		}
+		return res / attempts;
+	}
+
+	double set_insert_element_time(int numbers_for_filling, int attempts) {
+		double res = 0;
+		for (int attempt = 0; attempt < attempts; attempt++) {
+			Set<int> new_set;
+			int current_count_of_elements = 0;
+			while (current_count_of_elements != numbers_for_filling) {
+				if (new_set.insert(lcg())) {
+					current_count_of_elements++;
+				}
+			}
+			uint64_t begin = time_now();
+			new_set.insert(lcg());
+			uint64_t end = time_now();
+			res += (end - begin);
+		}
+		return res / attempts;
+	}
+
+	double vector_insert_element_time(int numbers_for_filling, int attempts) {
+		double res = 0;
+		for (int attempt = 0; attempt < attempts; attempt++) {
+			vector<int> new_vector;
+			int current_count_of_elements = 0;
+			while (current_count_of_elements != numbers_for_filling) {
+				new_vector.push_back(lcg());
+				current_count_of_elements++;
+			}
+			uint64_t begin = time_now();
+			new_vector.push_back(lcg());
+			uint64_t end = time_now();
+			res += (end - begin);
+		}
+		return res / attempts;
+	}
+
+	double set_erase_element_time(int numbers_for_filling, int attempts) {
+		double res = 0;
+		for (int attempt = 0; attempt < attempts; attempt++) {
+			Set<int> new_set;
+			int current_count_of_elements = 0;
+			while (current_count_of_elements != numbers_for_filling) {
+				if (new_set.insert(lcg())) {
+					current_count_of_elements++;
+				}
+			}
+			uint64_t begin = time_now();
+			new_set.erase(lcg());
+			uint64_t end = time_now();
+			res += (end - begin);
+		}
+		return res / attempts;
+	}
+
+	double vector_erase_element_time(int numbers_for_filling, int attempts) {
+		double res = 0;
+		for (int attempt = 0; attempt < attempts; attempt++) {
+			vector<int> new_vector;
+			int current_count_of_elements = 0;
+			while (current_count_of_elements != numbers_for_filling) {
+				new_vector.push_back(lcg());
+				current_count_of_elements++;
+			}
+			uint64_t begin = time_now();
+			size_t element = lcg();
+			for (int i = 0; i < new_vector.size(); i++) {
+				if (new_vector[i] == element) {
+					new_vector.erase(new_vector.begin() + i);
+					break;
+				}
+			}
+			uint64_t end = time_now();
+			res += (end - begin);
+		}
+		return res / attempts;
+	}
+
+	template<typename T>
+	Set<T> logic_or(Set<T> left_tree, Set<T> right_tree) {
+		Set<T> result;
+		std::function<void(Node<T>*)> m_union = [&](Node<T>* node) {
+			if (node != nullptr) {
+				m_union(node->_left);
+				result.insert(node->_value);
+				m_union(node->_right);
+			}
+			};
+		m_union(left_tree.get_root());
+		m_union(right_tree.get_root());
+		return result;
+	}
+	template<typename T>
+	Set<T> logic_xor(Set<T> left_tree, Set<T> right_tree) {
+		Set<T> result;
+		std::function<void(Node<T>*)> m_union = [&](Node<T>* node) {
+			if (node != nullptr) {
+				m_union(node->_left);
+				if (!(left_tree.contain(node->_value) && right_tree.contain(node->_value))) {
+					result.insert(node->_value);
+				}
+				m_union(node->_right);
+			}
+			};
+		m_union(left_tree.get_root());
+		m_union(right_tree.get_root());
+		return result;
+	}
+}
