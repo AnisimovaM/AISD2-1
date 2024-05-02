@@ -1,6 +1,11 @@
 #include <fstream>
 #include <iostream>
-
+#include <vector>
+#include <complex>
+#include <algorithm>
+#include <chrono>
+#include <random>
+#include <functional>
 
 using namespace std;
 
@@ -106,4 +111,61 @@ namespace tree {
 
 	public:
 
+		Set() {
+			_root = nullptr;
+		}
+
+		Set(T value) {
+			_root = new Node<T>(value);
+		}
+
+		Set(Node<T>* node) {
+			_root = new Node<T>(node->_value, node->_left, node->_right);
+		}
+
+		Set(const Set<T>& other) {
+			_root = copying(other._root);
+		}
+
 		
+
+		Set<T>& operator=(const Set<T>& other) {
+			if (this != &other) {
+				deletion(_root);
+				_root = copying(other._root);
+			}
+			return *this;
+		}
+
+		Node<T>* get_root() const {
+			return _root;
+		}
+
+		bool erase(T value) {
+			return delete_element(_root, value);
+		}
+
+		bool contain(T value) {
+			return element_presence(_root, value);
+		}
+
+		bool insert(T value) {
+			return adding_element(_root, value);
+		}
+
+		void print() {
+			if (_root) {
+				print(_root);
+			}
+			cout << endl;
+		}
+
+		~Set() {
+			deletion(_root);
+		}
+
+	};
+
+	
+
+	
