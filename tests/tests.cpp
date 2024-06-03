@@ -105,11 +105,13 @@ TEST(Logic_operations, EraseTime) {
 	test_set_2.insert(5);
 	test_set_2.insert(6);
 	test_set_2.insert(7);
+	
 
-	Set<int> result_xor = logic_xor(test_set_1, test_set_2);
-	Set<int> result_or = logic_or(test_set_1, test_set_2);
-	result_xor.print();
-	result_or.print();
+	Set<int> result = test_set_1.logic_or(test_set_2);
+	result.print();
+	Set<int> resultx = test_set_1.logic_xor(test_set_2);
+	resultx.print();
+	
 }
 TEST(ComparisonOfVectorAndSet, FillTime) {
 	int number = 1000;
